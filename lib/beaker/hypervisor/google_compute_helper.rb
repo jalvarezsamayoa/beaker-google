@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'google/api_client'
+require 'google/api_client/environment'
 require 'json'
 require 'time'
 require 'ostruct'
@@ -141,10 +142,12 @@ module Beaker
       try = (Time.now - start) / SLEEPWAIT
       while try <= attempts
         begin
+          @logger.debug(version)
           @compute = @client.discovered_api('compute', version)
           @logger.debug('Google Compute API discovered')
           return
         rescue StandardError => e
+          @logger.debug(e)
           @logger.debug('Failed to discover Google Compute API')
           raise e if try >= attempts
         end
